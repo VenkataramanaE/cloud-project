@@ -46,7 +46,7 @@ public class CandidateController {
         String specificData = resumeParserService.extractSpecificData(parsedContent);
 
         // Pass message to the view
-        model.addAttribute("message", "Resume uploaded and parsed. Extracted Data: " + specificData);
+        model.addAttribute("message", "Resume uploaded Succeesfully");
 
         return "upload";
     }
