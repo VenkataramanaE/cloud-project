@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,11 +47,16 @@ public class S3Service {
         return fileName;
     }
 
-    public byte[] downloadFile(String key) {
-        return s3Client.getObjectAsBytes(GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .build()).asByteArray();
+    public InputStream downloadFile(String key) {
+        try {
+            return s3Client.getObject(GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public List<String> listFiles() {

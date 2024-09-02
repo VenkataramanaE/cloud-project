@@ -4,14 +4,22 @@ import com.example.crm.service.ResumeParserService;
 import com.example.crm.service.S3Service;
 import org.apache.tika.exception.TikaException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpHeaders;
+
 
 import java.io.IOException;
+import java.io.InputStream;
+//import java.net.http.HttpHeaders;
 import java.util.List;
 
 @Controller
@@ -50,4 +58,18 @@ public class CandidateController {
         model.addAttribute("files", files);
         return "download";
     }
+ // In CandidateController.java
+    @GetMapping("/candidates/download/{key}")
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable String key) {
+        InputStream inputStream = s3Service.downloadFile(key);
+        if (inputStream == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        InputStreamResource resource = new InputStreamResource(inputStream);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + key)
+                .body(resource);
+    }
 }
+
+

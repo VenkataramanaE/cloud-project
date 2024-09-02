@@ -22,4 +22,5 @@ public class ResumeParserService {
         String email = parsedContent.replaceAll(".*?(\\S+@\\S+).*", "$1");
         return email; // Placeholder example for extracting email
     }
+    
 }
